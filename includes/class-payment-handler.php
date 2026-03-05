@@ -1,11 +1,8 @@
 <?php
 /**
- * Pay Per Lesson - Payment Handler
- * Handles full checkout processing, Comgate integration (official v2.0 REST API),
- * Bank Transfer + dynamic QR code (Czech SPD format), order completion,
- * access granting, basket clearing and emails.
- *
- * Fully matches your user journey and works with all previous files.
+ * Pay Per Lesson - Payment Handler (FIXED VERSION)
+ * Duplicate method removed + bank manual confirmation merged
+ * Activator path bug also fixed in related files (no more issues)
  */
 
 if (!defined('ABSPATH')) exit;
@@ -18,9 +15,6 @@ class PPL_Payment_Handler {
         add_action('template_redirect', [$this, 'maybe_render_bank_qr_page']);
     }
 
-    /**
-     * Calculate total with bundle discounts from settings
-     */
     private function calculate_total($basket) {
         $settings = get_option('ppl_settings', []);
         $total = 0;
@@ -28,30 +22,19 @@ class PPL_Payment_Handler {
             $price = absint(get_post_meta($lesson_id, '_ppl_price', true));
             $total += $price;
         }
-
         $count = count($basket);
         $discount = 0;
-        if ($count >= 10) {
-            $discount = absint($settings['pricing_discount_10'] ?? 30);
-        } elseif ($count >= 5) {
-            $discount = absint($settings['pricing_discount_5'] ?? 15);
-        }
-
-        if ($discount > 0) {
-            $total = $total * (100 - $discount) / 100;
-        }
-        return absint($total); // in cents
+        if ($count >= 10) $discount = absint($settings['pricing_discount_10'] ?? 30);
+        elseif ($count >= 5) $discount = absint($settings['pricing_discount_5'] ?? 15);
+        if ($discount > 0) $total = $total * (100 - $discount) / 100;
+        return absint($total);
     }
 
-    /**
-     * Save pending order to DB
-     */
     private function save_pending_order($basket, $total_cents, $method, $trans_id = '') {
         global $wpdb;
         $user_id = get_current_user_id();
         $lesson_ids = wp_json_encode($basket);
-
-        $ref_id = $trans_id ?: 'BANK-' . wp_generate_password(12, false); // for bank QR
+        $ref_id = $trans_id ?: 'BANK-' . wp_generate_password(12, false);
 
         $wpdb->insert($wpdb->prefix . 'ppl_orders', [
             'user_id'        => $user_id,
@@ -59,17 +42,17 @@ class PPL_Payment_Handler {
             'total'          => $total_cents / 100,
             'payment_method' => $method,
             'status'         => 'pending',
-            'trans_id'       => $trans_id ?: $ref_id,
+            'trans_id'       => $ref_id,
         ]);
-
         return $wpdb->insert_id;
     }
 
-    /**
-     * Main checkout processor
-     */
     public function process_checkout() {
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'ppl_checkout')) {
+            // Check for bank manual complete
+            if (isset($_POST['complete_bank']) && wp_verify_nonce($_POST['_wpnonce'] ?? '', 'ppl_bank_complete')) {
+                $this->handle_bank_manual_complete();
+            }
             return;
         }
 
@@ -97,6 +80,21 @@ class PPL_Payment_Handler {
         }
     }
 
+    private function handle_bank_manual_complete() {
+        $order_id = absint($_POST['order_id'] ?? 0);
+        global $wpdb;
+        $order = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}ppl_orders WHERE id = %d AND user_id = %d AND status = 'pending'",
+            $order_id, get_current_user_id()
+        ));
+
+        if ($order) {
+            $this->complete_payment($order->id, 'bank');
+            wp_redirect(home_url('/payment-success/'));
+            exit;
+        }
+    }
+    
     /**
      * Comgate payment creation (official REST API v2.0)
      */
@@ -296,29 +294,6 @@ class PPL_Payment_Handler {
         </html>
         <?php
         exit;
-    }
-
-    /**
-     * Handle manual bank payment confirmation ("I have paid" button)
-     */
-    public function process_checkout() { // extended to catch bank complete
-        // ... (previous code remains)
-
-        // Bank manual complete
-        if (isset($_POST['complete_bank']) && isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'ppl_bank_complete')) {
-            $order_id = absint($_POST['order_id']);
-            global $wpdb;
-            $order = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}ppl_orders WHERE id = %d AND user_id = %d AND status = 'pending'",
-                $order_id, get_current_user_id()
-            ));
-
-            if ($order) {
-                $this->complete_payment($order->id, 'bank');
-                wp_redirect(home_url('/payment-success/'));
-                exit;
-            }
-        }
     }
 
     /**
