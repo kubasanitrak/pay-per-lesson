@@ -1,0 +1,135 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Add to Basket button (on Lesson page) */
+.ppl-add-to-basket {
+  background: #0066cc;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 20px 0;
+}
+.ppl-add-to-basket:hover {
+  background: #004d99;
+  transform: translateY(-2px);
+}
+
+/* Checkout page */
+.ppl-checkout {
+  max-width: 800px;
+  margin: 40px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.ppl-checkout h1 {
+  color: #0066cc;
+  margin-bottom: 30px;
+}
+.ppl-checkout .basket-items {
+  list-style: none;
+  padding: 0;
+}
+.ppl-checkout .basket-items li {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+.ppl-checkout .basket-items li:last-child {
+  border: none;
+}
+.ppl-checkout .total {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: right;
+  margin: 30px 0;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+.ppl-checkout .total .discount {
+  font-size: 14px;
+  color: #28a745;
+  display: block;
+}
+.ppl-checkout .payment-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.ppl-checkout .payment-buttons button {
+  flex: 1;
+  min-width: 260px;
+  padding: 18px 30px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.ppl-checkout .payment-buttons button.comgate {
+  background: #0066cc;
+  color: white;
+}
+.ppl-checkout .payment-buttons button.comgate:hover {
+  background: #0052a3;
+}
+.ppl-checkout .payment-buttons button.bank {
+  background: #28a745;
+  color: white;
+}
+.ppl-checkout .payment-buttons button.bank:hover {
+  background: #208637;
+}
+
+/* Bank QR page (inline styles already in handler, but extra safety) */
+#qrcode {
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Success / Failed pages */
+.ppl-success, .ppl-failed {
+  text-align: center;
+  padding: 80px 20px;
+}
+.ppl-success h1, .ppl-failed h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+.ppl-success .success-icon, .ppl-failed .success-icon {
+  font-size: 80px;
+  color: #28a745;
+}
+
+/* My Lessons dashboard */
+.ppl-my-lessons .lesson-card {
+  background: white;
+  padding: 25px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 20px;
+}
+.ppl-my-lessons .lesson-card img {
+  border-radius: 8px;
+}
+
+/* Admin notice styles (optional) */
+.notice.ppl-notice {
+  border-left-color: #0066cc;
+}

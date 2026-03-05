@@ -1,0 +1,151 @@
+// Pay Per Lesson — SCSS (compile to public/assets/css/style.css)
+
+$primary: #0066cc;
+$success: #28a745;
+$danger: #dc3545;
+$gray: #666;
+$light: #f8f9fa;
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Add to Basket button (on Lesson page) */
+.ppl-add-to-basket {
+    background: $primary;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 20px 0;
+
+    &:hover {
+        background: darken($primary, 10%);
+        transform: translateY(-2px);
+    }
+}
+
+/* Checkout page */
+.ppl-checkout {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+    h1 {
+        color: $primary;
+        margin-bottom: 30px;
+    }
+
+    .basket-items {
+        list-style: none;
+        padding: 0;
+
+        li {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+
+            &:last-child { border: none; }
+        }
+    }
+
+    .total {
+        font-size: 24px;
+        font-weight: 700;
+        text-align: right;
+        margin: 30px 0;
+        padding-top: 20px;
+        border-top: 2px solid #eee;
+
+        .discount {
+            font-size: 14px;
+            color: $success;
+            display: block;
+        }
+    }
+
+    .payment-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+
+        button {
+            flex: 1;
+            min-width: 260px;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &.comgate {
+                background: $primary;
+                color: white;
+                &:hover { background: darken($primary, 8%); }
+            }
+
+            &.bank {
+                background: #28a745;
+                color: white;
+                &:hover { background: darken($success, 8%); }
+            }
+        }
+    }
+}
+
+/* Bank QR page (inline styles already in handler, but extra safety) */
+#qrcode {
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Success / Failed pages */
+.ppl-success, .ppl-failed {
+    text-align: center;
+    padding: 80px 20px;
+
+    h1 {
+        font-size: 42px;
+        margin-bottom: 20px;
+    }
+
+    .success-icon {
+        font-size: 80px;
+        color: $success;
+    }
+}
+
+/* My Lessons dashboard */
+.ppl-my-lessons {
+    .lesson-card {
+        background: white;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        display: flex;
+        gap: 20px;
+
+        img { border-radius: 8px; }
+    }
+}
+
+/* Admin notice styles (optional) */
+.notice.ppl-notice {
+    border-left-color: $primary;
+}
