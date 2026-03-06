@@ -66,6 +66,10 @@ class PayPerLesson {
         add_action('wp_enqueue_scripts', [$this, 'public_assets']);
         add_action('admin_enqueue_scripts', [$this, 'admin_assets']);
 
+        add_action( 'enqueue_block_editor_assets', function() {
+            wp_enqueue_editor();   // forces TinyMCE + Quicktags to load on Gutenberg pages
+        } );
+
         // Deactivation cleanup
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
     }

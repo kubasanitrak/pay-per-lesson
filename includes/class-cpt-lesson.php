@@ -7,12 +7,20 @@ class PPL_CPT_Lesson {
     }
 
     public function register_cpt() {
-        register_post_type('lesson', [
+        // register_post_type('lesson', [
+        //     'labels' => ['name' => 'Lessons', 'singular_name' => 'Lesson'],
+        //     'public' => true,
+        //     'has_archive' => true,
+        //     'supports' => ['title', 'editor', 'thumbnail'],
+        //     'menu_icon' => 'dashicons-welcome-learn-more',
+        // ]);
+        register_post_type( 'lesson', [
             'labels' => ['name' => 'Lessons', 'singular_name' => 'Lesson'],
-            'public' => true,
+            'public'              => true,
             'has_archive' => true,
-            'supports' => ['title', 'editor', 'thumbnail'],
-            'menu_icon' => 'dashicons-welcome-learn-more',
+            'show_in_rest'        => true,                    // ← THIS enables Gutenberg
+            'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields' ],
+            'menu_icon'           => 'dashicons-welcome-learn-more',
         ]);
     }
 
